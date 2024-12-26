@@ -25,9 +25,9 @@ import {
   JsonFileAppender,
 } from "@stilyng94/athena-query-client";
 
-const query = "SELECT * from api_logs";
+const athenaQuery = "SELECT * from api_logs";
 
-const execute = async (query) => {
+const execute = async (query: string) => {
   const athena = new AthenaQueryClient({
     Catalog: "catalog",
     Database: "logs",
@@ -37,7 +37,7 @@ const execute = async (query) => {
     s3Region: "us-west-2",
   });
 
-  const queryExecutionId = await athena.query();
+  const queryExecutionId = await athena.query(query);
 
   const jsonFileAppender = new JsonFileAppender({
     directory: "",
@@ -60,7 +60,7 @@ const execute = async (query) => {
     .catch((error) => console.error(error));
 };
 
-execute().catch(console.error);
+execute(athenaQuery).catch(console.error);
 ```
 
 ## Get query results and map to Js object
@@ -71,9 +71,9 @@ import {
   MappedQueryResultProcessor,
 } from "@stilyng94/athena-query-client";
 
-const query = "SELECT * from api_logs";
+const athenaQuery = "SELECT * from api_logs";
 
-const execute = async (query) => {
+const execute = async (query: string) => {
   const athena = new AthenaQueryClient({
     Catalog: "catalog",
     Database: "logs",
@@ -83,7 +83,7 @@ const execute = async (query) => {
     s3Region: "us-west-2",
   });
 
-  const queryExecutionId = await athena.query();
+  const queryExecutionId = await athena.query(query);
 
   const mappedQueryResultProcessor = new MappedQueryResultProcessor({
     athenaClient: athena,
@@ -93,5 +93,5 @@ const execute = async (query) => {
   });
 };
 
-execute().catch(console.error);
+execute(athenaQuery).catch(console.error);
 ```
