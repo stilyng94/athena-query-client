@@ -44,6 +44,13 @@ export interface S3QueryResultProcessorParams {
    * Callback function to process each batch of data
    */
   onData: (data: unknown[]) => Promise<void>
+
+  /**
+   * Optional Callback function to call when processing is done
+   * @param data Optional data to pass to the callback function
+   * @returns Promise resolving to void
+   */
+  onComplete?: (data?: unknown) => Promise<void>
   /**
    * Optional: The maximum number of records to process in a single batch
    * @default 999
@@ -56,7 +63,7 @@ export interface S3QueryResultProcessorParams {
    */
   csvParseOptions?: Options
 
-  /** S3 location where query results will be stored */
+  /** S3 location where query results are being stored */
   s3OutputLocation: string
   /** AWS region for S3 operations */
   s3Region: string

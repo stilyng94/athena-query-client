@@ -85,6 +85,7 @@ export class S3QueryResultProcessor implements QueryResultProcessor {
         totalProcessed += batch.length
         console.log(`Final total records processed: ${totalProcessed}`)
       }
+      await this.config?.onComplete?.()
     } catch (error) {
       throw new Error(
         `Error processing results: ${
