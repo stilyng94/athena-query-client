@@ -68,3 +68,13 @@ export interface MappedQueryResultProcessorParams {
    */
   athenaClient: AthenaClient
 }
+
+/**
+ *@description Options for configuring the JsonFileAppender
+ */
+export interface JsonFileAppenderOptions {
+  /** Name of the file to append to */
+  fileName: string
+  /** Directory path where the file is located */
+  directory: string
+}
