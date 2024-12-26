@@ -1,4 +1,4 @@
-# athena-query-client
+# @stilyng94/athena-query-client
 
 ## 1.0.1
 
