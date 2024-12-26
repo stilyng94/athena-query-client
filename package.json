@@ -11,10 +11,13 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
+    "local-release": "changeset version && changeset publish",
     "format-and-fix": "biome format --write .",
     "lint-and-fix": "biome lint --write .",
     "check-exports": "attw --pack . --ignore-rules=cjs-resolves-to-esm",
-    "ci": "pnpm lint-and-fix && pnpm format-and-fix && pnpm build && pnpm check-exports"
+    "pre-ci": "pnpm format-and-fix && pnpm lint-and-fix",
+    "ci": "pnpm build && pnpm check-exports",
+    "prepublishOnly": "pnpm pre-ci && pnpm ci"
   },
   "keywords": [
     "athena",
@@ -43,6 +46,7 @@
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.17.2",
     "@biomejs/biome": "1.9.4",
+    "@changesets/cli": "^2.27.11",
     "@total-typescript/tsconfig": "^1.0.4",
     "@types/node": "^22.10.2",
     "typescript": "^5.6.3"
