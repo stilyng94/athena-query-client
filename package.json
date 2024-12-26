@@ -14,8 +14,9 @@
     "local-release": "changeset version && changeset publish",
     "format-and-fix": "biome format --write .",
     "lint-and-fix": "biome lint --write .",
+    "check": "biome check --write .",
     "check-exports": "attw --pack . --ignore-rules=cjs-resolves-to-esm",
-    "pre-ci": "pnpm format-and-fix && pnpm lint-and-fix",
+    "pre-ci": "pnpm format-and-fix && pnpm lint-and-fix && pnpm check",
     "ci": "pnpm build && pnpm check-exports",
     "prepublishOnly": "pnpm pre-ci && pnpm run ci"
   },

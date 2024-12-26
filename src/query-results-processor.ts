@@ -1,11 +1,3 @@
-import { parse } from 'csv-parse'
-import {
-  MAX_BATCH_SIZE,
-  type S3QueryResultProcessorParams,
-  type MappedQueryResultProcessorParams,
-  type QueryResultProcessor,
-} from './types.js'
-import { GetObjectCommand, S3Client } from '@aws-sdk/client-s3'
 import type { Readable } from 'node:stream'
 import { finished } from 'node:stream/promises'
 import {
@@ -13,6 +5,14 @@ import {
   type ResultSet,
   type Row,
 } from '@aws-sdk/client-athena'
+import { GetObjectCommand, S3Client } from '@aws-sdk/client-s3'
+import { parse } from 'csv-parse'
+import {
+  MAX_BATCH_SIZE,
+  type MappedQueryResultProcessorParams,
+  type QueryResultProcessor,
+  type S3QueryResultProcessorParams,
+} from './types.js'
 
 /**
  * Processes Athena query results stored in S3

@@ -17,8 +17,8 @@ import {
   timer,
 } from 'rxjs'
 import { expand, filter, switchMap, take } from 'rxjs/operators'
-import type { AthenaQueryClientConfig } from './types.js'
 import { AthenaQueryError } from './errors.js'
+import type { AthenaQueryClientConfig } from './types.js'
 
 /**
  * Client for executing queries against AWS Athena and retrieving results

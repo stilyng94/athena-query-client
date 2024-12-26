@@ -1,7 +1,7 @@
-import path from 'node:path'
-import type { JsonFileAppenderOptions } from './types.js'
 import { createWriteStream } from 'node:fs'
 import { access, mkdir, stat, writeFile } from 'node:fs/promises'
+import path from 'node:path'
+import type { JsonFileAppenderOptions } from './types.js'
 
 /**
  *@description Handles appending JSON data to files with proper formatting
