@@ -9,4 +9,6 @@ export type {
   MappedQueryResultProcessorParams,
   QueryResultProcessor,
   S3QueryResultProcessorParams,
+  JsonFileAppenderOptions,
 } from './types.js'
+export { JsonFileAppender } from './json-file-appender.js'
