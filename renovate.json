@@ -1,0 +1,42 @@
+{
+	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
+	"separateMajorMinor": true,
+	"baseBranches": ["dev"],
+	"useBaseBranchConfig": "merge",
+	"enabledManagers": ["npm"],
+	"semanticCommits": "enabled",
+	"semanticCommitType": "feat",
+	"semanticCommitScope": "{{{depName}}}",
+	"commitMessageAction": "update",
+	"commitMessageTopic": "to",
+	"commitMessageExtra": "{{{newVersion}}}",
+	"branchPrefix": "dependency/",
+	"branchTopic": "{{{depNameSanitized}}}",
+	"addLabels": ["dependencies"],
+	"prBodyTemplate": "{{{header}}}{{{table}}}{{{warnings}}}{{{notes}}}",
+	"prBodyNotes": [
+		"**Release notes**: {{{packageName}}}/releases/tag/{{{encodeURIComponent newVersion}}}",
+		"**Remember**: This PR is a simple update of the version and does not cover any, **probably required**, configuration changes! You can use this PR to add those changes if needed."
+	],
+	"extends": [
+		"config:recommended",
+		":preserveSemverRanges",
+		"group:allNonMajor",
+		"schedule:weekly",
+		":maintainLockFilesWeekly",
+		"npm:unpublishSafe",
+		":disableDependencyDashboard",
+		":rebaseStalePrs"
+	],
+	"lockFileMaintenance": {
+		"extends": ["group:all"],
+		"commitMessageAction": "Update"
+	},
+	"packageRules": [
+		{
+			"description": "Automatically merge minor and patch-level updates",
+			"matchUpdateTypes": ["minor", "patch", "digest"]
+		}
+	],
+	"ignoreDeps": []
+}

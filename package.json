@@ -9,7 +9,12 @@
     "url": "https://github.com/stilyng94/athena-query-client"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "format-and-fix": "biome format --write .",
+    "lint-and-fix": "biome lint --write .",
+    "check-exports": "attw --pack . --ignore-rules=cjs-resolves-to-esm",
+    "ci": "pnpm lint-and-fix && pnpm format-and-fix && pnpm build && pnpm check-exports"
   },
   "keywords": [
     "athena",
