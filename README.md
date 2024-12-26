@@ -1,13 +1,13 @@
 **athena-query-client**
 
-# athena-query-client
+# @stilyng94/athena-query-client
 
 A lightweight client library for executing Amazon Athena queries.
 
 ## Installation
 
 ```bash
-npm install athena-query-client
+npm install @stilyng94/athena-query-client
 ```
 
 ### !!Notice
@@ -23,7 +23,7 @@ import {
   AthenaQueryClient,
   S3QueryResultProcessor,
   JsonFileAppender,
-} from "athena-query-client";
+} from "@stilyng94/athena-query-client";
 
 const query = "SELECT * from api_logs";
 
@@ -69,7 +69,7 @@ execute().catch(console.error);
 import {
   AthenaQueryClient,
   MappedQueryResultProcessor,
-} from "athena-query-client";
+} from "@stilyng94/athena-query-client";
 
 const query = "SELECT * from api_logs";
 
