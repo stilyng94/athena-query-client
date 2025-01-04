@@ -57,12 +57,12 @@ export class S3QueryResultProcessor implements QueryResultProcessor {
     let totalProcessed = 0
 
     const parser = stream.pipe(
-      parse({ ...(this.config.csvParseOptions ?? {}) }),
+      parse({ columns: true, ...(this.config.csvParseOptions ?? {}) }),
     )
 
     try {
       parser.on('readable', async () => {
-        const record = parser.read()
+        let record = parser.read()
         while (record !== null) {
           // Work with each record
           batch.push(record)
@@ -73,6 +73,7 @@ export class S3QueryResultProcessor implements QueryResultProcessor {
             batch.length = 0 // Clear array efficiently
             console.log(`Total records processed: ${totalProcessed}`)
           }
+          record = parser.read()
         }
       })
 
