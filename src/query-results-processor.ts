@@ -8,11 +8,37 @@ import {
 import { GetObjectCommand, S3Client } from '@aws-sdk/client-s3'
 import { parse } from 'csv-parse'
 import {
+  EMPTY,
+  type Observable,
+  defer,
+  firstValueFrom,
+  from,
+  of,
+  throwError,
+  timer,
+} from 'rxjs'
+import {
   MAX_BATCH_SIZE,
   type MappedQueryResultProcessorParams,
   type QueryResultProcessor,
   type S3QueryResultProcessorParams,
 } from './types.js'
+
+import {
+  catchError,
+  concatWith,
+  expand,
+  filter,
+  switchMap,
+} from 'rxjs/operators'
+
+function validateBatchSize(maxBatchSize: number, batchSize?: number): number {
+  if (!batchSize) return maxBatchSize
+  if (batchSize > maxBatchSize) {
+    throw new Error(`Batch size cannot be greater than ${maxBatchSize}`)
+  }
+  return batchSize
+}
 
 /**
  * Processes Athena query results stored in S3
@@ -120,11 +146,7 @@ export class S3QueryResultProcessor implements QueryResultProcessor {
    * @throws {Error} If batch size exceeds maximum allowed
    */
   #validateBatchSize(batchSize?: number): number {
-    if (!batchSize) return MAX_BATCH_SIZE
-    if (batchSize > MAX_BATCH_SIZE) {
-      throw new Error(`Batch size cannot be greater than ${MAX_BATCH_SIZE}`)
-    }
-    return batchSize
+    return validateBatchSize(this.#batchSize, batchSize)
   }
 
   /**
@@ -180,11 +202,17 @@ export class S3QueryResultProcessor implements QueryResultProcessor {
  * Processes Athena query results by mapping them to objects
  */
 export class MappedQueryResultProcessor implements QueryResultProcessor {
+  readonly #batchSize = MAX_BATCH_SIZE
+  readonly #shouldPaginate: boolean = true
+
   /**
    * Creates a new MappedQueryResultProcessor
    * @param {MappedQueryResultProcessorParams} config - Configuration parameters
    */
-  constructor(private readonly config: MappedQueryResultProcessorParams) {}
+  constructor(private readonly config: MappedQueryResultProcessorParams) {
+    this.#batchSize = this.#validateBatchSize(config.MaxResults)
+    this.#shouldPaginate = config.paginateResults ?? true
+  }
 
   /**
    * Processes query results by mapping them to objects
@@ -197,8 +225,10 @@ export class MappedQueryResultProcessor implements QueryResultProcessor {
     console.log('Fetching results for QueryExecutionId:', queryExecutionId)
 
     try {
-      const resultSet = await this.#fetchQueryResults(queryExecutionId)
-      return this.#extractRows(resultSet)
+      const resultSets = await firstValueFrom(
+        this.#fetchQueryResults(queryExecutionId, undefined),
+      )
+      return resultSets.flatMap((resultSet) => this.#extractRows(resultSet))
     } catch (error) {
       throw new Error(
         `Error processing results: ${
@@ -211,19 +241,73 @@ export class MappedQueryResultProcessor implements QueryResultProcessor {
   /**
    * Fetches query results from Athena
    * @param {string} queryExecutionId - The ID of the query execution
-   * @returns {Promise<ResultSet>} Promise resolving to Athena ResultSet
-   * @throws {Error} If results are empty or undefined
+   * @param {string | undefined} nextToken - The pagination token
+   * @returns {Promise<ResultSet[]>} Promise resolving to Athena ResultSet
+   * @throws {Error} If results are undefined
    */
-  async #fetchQueryResults(queryExecutionId: string): Promise<ResultSet> {
-    const response = await this.config.athenaClient.send(
-      new GetQueryResultsCommand({ QueryExecutionId: queryExecutionId }),
+  #fetchQueryResults(
+    queryExecutionId: string,
+    nextToken: string | undefined,
+  ): Observable<ResultSet[]> {
+    return defer(() =>
+      from(
+        this.config.athenaClient.send(
+          new GetQueryResultsCommand({
+            QueryExecutionId: queryExecutionId,
+            MaxResults: this.#batchSize,
+            NextToken: nextToken,
+          }),
+        ),
+      ),
+    ).pipe(
+      switchMap((response) => {
+        if (!response.ResultSet) {
+          return throwError(
+            () =>
+              new Error(
+                `Query results are undefined for QueryExecutionId: ${queryExecutionId}`,
+              ),
+          )
+        }
+
+        const resultObservable = of(response.ResultSet)
+
+        if (this.#shouldPaginate && response.NextToken) {
+          console.log('Fetching next page of results...')
+          return resultObservable.pipe(
+            concatWith(of(response.NextToken)), // Pass the NextToken for pagination
+          )
+        }
+
+        console.log('Query results fetching complete')
+        return resultObservable // Only emit the current ResultSet
+      }),
+      expand(
+        (resultOrNextToken) =>
+          typeof resultOrNextToken === 'string' // If it's a NextToken, fetch the next page
+            ? timer(500).pipe(
+                switchMap(() =>
+                  this.#fetchQueryResults(queryExecutionId, resultOrNextToken),
+                ),
+              )
+            : EMPTY, // If it's a ResultSet, stop recursion
+      ),
+      filter(
+        (resultOrNextToken) => typeof resultOrNextToken !== 'string', // Keep only ResultSet objects
+      ),
+      catchError((error) => {
+        console.error(
+          `Error fetching query results for QueryExecutionId: ${queryExecutionId}`,
+          error,
+        )
+        return throwError(
+          () =>
+            new Error(
+              `Failed to fetch query results for QueryExecutionId: ${queryExecutionId}. ${error.message}`,
+            ),
+        )
+      }),
     )
-
-    if (!response.ResultSet) {
-      throw new Error('Query results are empty or undefined')
-    }
-
-    return response.ResultSet
   }
 
   /**
@@ -280,5 +364,15 @@ export class MappedQueryResultProcessor implements QueryResultProcessor {
       throw new Error('No headers found in the result set')
     }
     return Rows.slice(1).map((row) => this.#mapRowToObject(row, headers))
+  }
+
+  /**
+   * Validates the batch size configuration
+   * @param {number} [batchSize] - The batch size to validate
+   * @returns {number} The validated batch size
+   * @throws {Error} If batch size exceeds maximum allowed
+   */
+  #validateBatchSize(batchSize?: number): number {
+    return validateBatchSize(this.#batchSize, batchSize)
   }
 }
