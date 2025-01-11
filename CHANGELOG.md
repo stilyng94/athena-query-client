@@ -1,5 +1,11 @@
 # @stilyng94/athena-query-client
 
+## 1.2.0
+
+### Minor Changes
+
+- 465d483: MappedQueryResultProcessor to paginate and get all records
+
 ## 1.1.0
 
 ### Minor Changes
