@@ -7,11 +7,11 @@ import {
   type StartQueryExecutionCommandInput,
 } from '@aws-sdk/client-athena'
 import {
-  EMPTY,
-  type Observable,
   defer,
+  EMPTY,
   firstValueFrom,
   from,
+  type Observable,
   of,
   throwError,
   timer,

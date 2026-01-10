@@ -9,7 +9,10 @@
     "url": "https://github.com/stilyng94/athena-query-client"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest --coverage",
+    "test:run": "vitest run",
     "build": "tsc",
     "local-release": "changeset version && changeset publish",
     "format-and-fix": "biome format --write .",
@@ -17,7 +20,7 @@
     "check": "biome check --write .",
     "check-exports": "attw --pack . --ignore-rules=cjs-resolves-to-esm",
     "pre-ci": "pnpm format-and-fix && pnpm lint-and-fix && pnpm check",
-    "ci": "pnpm build && pnpm check-exports",
+    "ci": "pnpm build && pnpm check-exports && pnpm test:run",
     "prepublishOnly": "pnpm pre-ci && pnpm run ci"
   },
   "keywords": [
@@ -38,19 +41,22 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "@aws-sdk/client-athena": "^3.696.0",
-    "@aws-sdk/client-s3": "^3.717.0",
-    "csv-parse": "^5.6.0",
-    "pino": "^9.6.0",
-    "rxjs": "^7.8.1"
+    "@aws-sdk/client-athena": "^3.966.0",
+    "@aws-sdk/client-s3": "^3.966.0",
+    "csv-parse": "^6.1.0",
+    "pino": "^10.1.1",
+    "rxjs": "^7.8.2"
   },
   "devDependencies": {
-    "@arethetypeswrong/cli": "^0.18.0",
-    "@biomejs/biome": "1.9.4",
-    "@changesets/cli": "^2.27.11",
+    "@arethetypeswrong/cli": "^0.18.2",
+    "@biomejs/biome": "2.3.11",
+    "@changesets/cli": "^2.29.8",
     "@total-typescript/tsconfig": "^1.0.4",
-    "@types/node": "^22.10.2",
-    "typescript": "^5.6.3"
+    "@types/node": "^25.0.6",
+    "@vitest/coverage-v8": "^4.0.16",
+    "@vitest/ui": "^4.0.16",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.16"
   },
   "packageManager": "pnpm@9.15.9+sha512.68046141893c66fad01c079231128e9afb89ef87e2691d69e4d40eee228988295fd4682181bae55b58418c3a253bde65a505ec7c5f9403ece5cc3cd37dcf2531"
 }
