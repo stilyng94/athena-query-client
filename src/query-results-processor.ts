@@ -8,22 +8,15 @@ import {
 import { GetObjectCommand, S3Client } from '@aws-sdk/client-s3'
 import { parse } from 'csv-parse'
 import {
-  EMPTY,
-  type Observable,
   defer,
+  EMPTY,
   firstValueFrom,
   from,
+  type Observable,
   of,
   throwError,
   timer,
 } from 'rxjs'
-import {
-  MAX_BATCH_SIZE,
-  type MappedQueryResultProcessorParams,
-  type QueryResultProcessor,
-  type S3QueryResultProcessorParams,
-} from './types.js'
-
 import {
   catchError,
   concatWith,
@@ -31,6 +24,12 @@ import {
   filter,
   switchMap,
 } from 'rxjs/operators'
+import {
+  MAX_BATCH_SIZE,
+  type MappedQueryResultProcessorParams,
+  type QueryResultProcessor,
+  type S3QueryResultProcessorParams,
+} from './types.js'
 
 function validateBatchSize(maxBatchSize: number, batchSize?: number): number {
   if (!batchSize) return maxBatchSize
