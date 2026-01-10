@@ -8,5 +8,12 @@
 		"skipLibCheck": true,
 		"outDir": "dist"
 	},
-	"extends": ["@total-typescript/tsconfig/tsc/no-dom/library"]
+	"extends": ["@total-typescript/tsconfig/tsc/no-dom/library"],
+	"exclude": [
+		"node_modules",
+		"dist",
+		"**/*.spec.ts",
+		"**/*.test.ts",
+		"src/__tests__"
+	]
 }

@@ -54,7 +54,7 @@ export function createMockQueryExecutionResponse(
 /**
  * Factory function to create mock S3 processor config
  */
-export function createMockS3ProcessorConfig() {
+export function createMockS3ProcessorConfig(): Record<string, unknown> {
   return {
     onData: vi.fn(),
     onComplete: vi.fn(),
@@ -77,7 +77,7 @@ export function createMockJsonAppenderOptions() {
 /**
  * Creates a mock Athena client with spy functions
  */
-export function createMockAthenaClient() {
+export function createMockAthenaClient(): Record<string, unknown> {
   return {
     send: vi.fn(),
   }
@@ -118,7 +118,7 @@ export async function waitMs(ms: number): Promise<void> {
 /**
  * Creates a mock stream-like object
  */
-export function createMockStream() {
+export function createMockStream(): Record<string, unknown> {
   return {
     pipe: vi.fn().mockReturnThis(),
     on: vi.fn().mockReturnThis(),

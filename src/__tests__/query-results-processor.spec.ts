@@ -21,8 +21,8 @@ describe('S3QueryResultProcessor', () => {
     vi.clearAllMocks()
     mockOnData = vi.fn()
     mockOnComplete = vi.fn()
-    mockConfig.onData = mockOnData
-    mockConfig.onComplete = mockOnComplete
+    mockConfig.onData = mockOnData as (data: unknown[]) => Promise<void>
+    mockConfig.onComplete = mockOnComplete as (data?: unknown) => Promise<void>
 
     processor = new S3QueryResultProcessor(mockConfig)
   })
@@ -158,7 +158,7 @@ describe('S3QueryResultProcessor', () => {
     it('should accept onData callback', () => {
       const config: S3QueryResultProcessorParams = {
         ...mockConfig,
-        onData: mockOnData,
+        onData: mockOnData as (data: unknown[]) => Promise<void>,
       }
 
       const newProcessor = new S3QueryResultProcessor(config)
@@ -168,7 +168,7 @@ describe('S3QueryResultProcessor', () => {
     it('should accept optional onComplete callback', () => {
       const config: S3QueryResultProcessorParams = {
         ...mockConfig,
-        onComplete: mockOnComplete,
+        onComplete: mockOnComplete as (data?: unknown) => Promise<void>,
       }
 
       const newProcessor = new S3QueryResultProcessor(config)
