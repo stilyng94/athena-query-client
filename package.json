@@ -4,6 +4,8 @@
   "description": "An Athena client to query data from Athena utilizing Aws-S3 or direct results from Athena query",
   "type": "module",
   "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.mts",
   "homepage": "https://github.com/stilyng94/athena-query-client",
   "bugs": {
     "url": "https://github.com/stilyng94/athena-query-client"
@@ -13,14 +15,13 @@
     "test:ui": "vitest --ui",
     "test:coverage": "vitest --coverage",
     "test:run": "vitest run",
-    "build": "tsc",
+    "build": "tsdown --format esm --format cjs",
     "local-release": "changeset version && changeset publish",
     "format-and-fix": "biome format --write .",
     "lint-and-fix": "biome lint --write .",
     "check": "biome check --write .",
-    "check-exports": "attw --pack . --ignore-rules=cjs-resolves-to-esm",
     "pre-ci": "pnpm format-and-fix && pnpm lint-and-fix && pnpm check",
-    "ci": "pnpm build && pnpm check-exports && pnpm test:run",
+    "ci": "pnpm build && pnpm test:run",
     "prepublishOnly": "pnpm pre-ci && pnpm run ci"
   },
   "keywords": [
@@ -55,6 +56,7 @@
     "@types/node": "^25.0.6",
     "@vitest/coverage-v8": "^4.0.16",
     "@vitest/ui": "^4.0.16",
+    "tsdown": "^0.19.0",
     "typescript": "^5.9.3",
     "vitest": "^4.0.16"
   },
