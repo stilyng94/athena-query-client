@@ -21,8 +21,7 @@
     "lint-and-fix": "biome lint --write .",
     "check": "biome check --write .",
     "pre-ci": "pnpm format-and-fix && pnpm lint-and-fix && pnpm check",
-    "ci": "pnpm build && pnpm test:run",
-    "prepublishOnly": "pnpm pre-ci && pnpm run ci"
+    "ci": "pnpm build && pnpm test:run"
   },
   "keywords": [
     "athena",
