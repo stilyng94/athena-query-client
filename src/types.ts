@@ -53,6 +53,7 @@ export interface S3QueryResultProcessorParams {
   onComplete?: (data?: unknown) => Promise<void>
   /**
    * Optional: The maximum number of records to process in a single batch
+   * should be less than or equal to 999
    * @default 999
    */
   batchSize?: number
@@ -71,9 +72,22 @@ export interface S3QueryResultProcessorParams {
 
 export interface MappedQueryResultProcessorParams {
   /**
-   *
+   * Athena client for executing queries
    */
   athenaClient: AthenaClient
+
+  /**
+   * Optional: Maximum number of records per query
+   * should be less than or equal to 999
+   * @default 999
+   */
+  MaxResults?: number
+
+  /**
+   * Should results be paginated. Athena has a limit of 1000 records per query, so this is useful for large datasets
+   * @default true
+   */
+  paginateResults?: boolean
 }
 
 /**
