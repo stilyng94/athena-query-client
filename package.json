@@ -16,12 +16,14 @@
     "test:coverage": "vitest --coverage",
     "test:run": "vitest run",
     "build": "tsdown --format esm --format cjs",
-    "local-release": "changeset version && changeset publish",
+    "version": "changeset version",
     "format-and-fix": "biome format --write .",
     "lint-and-fix": "biome lint --write .",
     "check": "biome check --write .",
     "pre-ci": "pnpm format-and-fix && pnpm lint-and-fix && pnpm check",
-    "ci": "pnpm build && pnpm test:run"
+    "ci": "pnpm build && pnpm test:run",
+    "release": "changeset publish",
+    "changeset": "changeset"
   },
   "keywords": [
     "athena",
