@@ -1,5 +1,11 @@
 # @stilyng94/athena-query-client
 
+## 1.2.1
+
+### Patch Changes
+
+- ec55d0e: Bump package versions and added tests
+
 ## 1.2.0
 
 ### Minor Changes
